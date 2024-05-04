@@ -31,8 +31,6 @@ func main() {
 			return
 		}
 
-		//customer.CreditCardNum = encryptedData
-
 		fmt.Printf("Registro: %s Nombre: %s CuentaNo. %s CreditCard Decrypted: %s CreditCard Encrypted: %s ccv: %s Fecha: %s \n",
 			customer.Reg,
 			customer.UserName,
