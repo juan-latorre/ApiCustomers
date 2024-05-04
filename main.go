@@ -10,6 +10,10 @@ import (
 func main() {
 	fmt.Println("Listado Clientes")
 
+	//customer_service.FullFillCollectionFromEndPoint()
+
+	//os.Exit(1)
+
 	formatDate := "02/01/2006"
 
 	customers, err := customer_service.GetInfoCustormer()
@@ -18,25 +22,24 @@ func main() {
 		//fmt.Println(customer)
 		//fmt.Printf("Numero: %s \n",customer.Reg)
 
-		encryptedData, err := crypto.EncryptData(customer.CreditCardNum)
-		if err != nil {
-			fmt.Println("Error al cifrar:", err)
-			return
-		}
+		// encryptedData, err := crypto.EncryptData(customer.CreditCardNum)
+		// if err != nil {
+		// 	fmt.Println("Error al cifrar:", err)
+		// 	return
+		// }
 
 		// Descifrar el atributo
-		decryptedData, err := crypto.DecryptData(encryptedData)
+		decryptedData, err := crypto.DecryptData(customer.CreditCardNum)
 		if err != nil {
 			fmt.Println("Error al descifrar:", err)
 			return
 		}
 
-		fmt.Printf("Registro: %s Nombre: %s CuentaNo. %s CreditCard Decrypted: %s CreditCard Encrypted: %s ccv: %s Fecha: %s \n",
-			customer.Reg,
+		fmt.Printf("Id: %s Nombre: %s CuentaNo. %s CreditCard Decrypted: %s ccv: %s Fecha: %s \n",
+			customer.ID,
 			customer.UserName,
 			customer.CuentaNumero,
 			decryptedData,
-			encryptedData,
 			customer.CreditCardCcv,
 			customer.FecBirthday.Format(formatDate))
 	}

@@ -8,12 +8,12 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-var collection = database.GetCollection("People")
+var collection = database.GetCollection("Usuarios")
 var ctx = context.Background()
 
-func GetBasicInfo() (m.CustomersList, error) {
+func GetBasicInfo() (m.ResponseList, error) {
 
-	var customersList m.CustomersList
+	var customersList m.ResponseList
 
 	filter := bson.D{}
 
@@ -25,7 +25,7 @@ func GetBasicInfo() (m.CustomersList, error) {
 
 	for cur.Next(ctx) {
 
-		var customer m.Customer
+		var customer m.Response
 		err = cur.Decode(&customer)
 
 		if err != nil {
@@ -36,4 +36,8 @@ func GetBasicInfo() (m.CustomersList, error) {
 	}
 
 	return customersList, nil
+}
+
+func SaveInfoIntoCollectionDB() {
+	database.SaveCollection()
 }

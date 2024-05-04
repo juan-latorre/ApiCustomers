@@ -2,18 +2,18 @@ package database
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 	"net/http"
-	"encoding/json"
+	"time"
 
+	crypto "ApiCustomers/crypto"
+	m "ApiCustomers/models"
+
+	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
-	m "ApiCustomers/models"
-	crypto "ApiCustomers/crypto"
-	
 )
 
 var (
@@ -46,32 +46,32 @@ func GetCollection(collection string) *mongo.Collection {
 	return col
 }
 
-func SaveCollection () {
- // Conectarse a MongoDB
- uri := fmt.Sprintf("mongodb+srv://%s:%s@%s", usr, pwd, host)
- client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
- if err != nil {
-	 log.Fatal(err)
- }
- defer client.Disconnect(context.Background())
+func SaveCollection() {
+	// Conectarse a MongoDB
+	uri := fmt.Sprintf("mongodb+srv://%s:%s@%s", usr, pwd, host)
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer client.Disconnect(context.Background())
 
- // Colección en la que se insertarán los registros
- collection := client.Database("Customers").Collection("People")
+	// Colección en la que se insertarán los registros
+	collection := client.Database("Customers").Collection("Usuarios")
 
- // Obtener los datos del endpoint
- resp, err := http.Get("https://62433a7fd126926d0c5d296b.mockapi.io/api/v1/usuarios")
- if err != nil {
-	 log.Fatal(err)
- }
- defer resp.Body.Close()
+	// Obtener los datos del endpoint
+	resp, err := http.Get("https://62433a7fd126926d0c5d296b.mockapi.io/api/v1/usuarios")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
 
- var usuarioList m.CustomersList
- 
- if err := json.NewDecoder(resp.Body).Decode(&usuarioList); err != nil {
-	 log.Fatal(err)
- }
+	var usuarioList m.ResponseList
 
- var documentos []interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&usuarioList); err != nil {
+		log.Fatal(err)
+	}
+
+	var documentos []interface{}
 	for _, usuario := range usuarioList {
 		//Encriptación de datos antes del guardado en mongoDB
 		usuario.CreditCardNum, _ = crypto.EncryptData(usuario.CreditCardNum)
@@ -82,12 +82,9 @@ func SaveCollection () {
 		documentos = append(documentos, usuario)
 	}
 
- // Insertar cada usuario en la colección de MongoDB
- if _, err := collection.InsertMany(context.Background(), documentos); err != nil {
-	log.Fatal(err)
-  }
+	// Insertar cada usuario en la colección de MongoDB
+	if _, err := collection.InsertMany(context.Background(), documentos); err != nil {
+		log.Fatal(err)
+	}
 
- }
-
-
-
+}
