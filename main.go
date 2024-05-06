@@ -1,51 +1,43 @@
 package main
 
 import (
-	crypto "ApiCustomers/crypto"
-	customer_service "ApiCustomers/services/customer.service"
+	//crypto "ApiCustomers/crypto"
+	//customer_service "ApiCustomers/services/customer.service"
+	"ApiCustomers/HTTP_Server/server"
+	"context"
 	"fmt"
+	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	//"net/http"
 	//"time"
 )
 
 func main() {
+
 	fmt.Println("Listado Clientes")
 
-	//customer_service.FullFillCollectionFromEndPoint()
+	ctx := context.Background()
 
-	//os.Exit(1)
+	serverDoneChannel := make(chan os.Signal, 1)
+	signal.Notify(serverDoneChannel,os.Interrupt,syscall.SIGTERM)
 
-	formatDate := "02/01/2006"
+    srv := server.New(":8080")
+	
+	go func () {
 
-	customers, err := customer_service.GetInfoCustormer()
-
-	for _, customer := range customers {
-		//fmt.Println(customer)
-		//fmt.Printf("Numero: %s \n",customer.Reg)
-
-		// encryptedData, err := crypto.EncryptData(customer.CreditCardNum)
-		// if err != nil {
-		// 	fmt.Println("Error al cifrar:", err)
-		// 	return
-		// }
-
-		// Descifrar el atributo
-		decryptedData, err := crypto.DecryptData(customer.CreditCardNum)
+		err := srv.ListenAndServe()
 		if err != nil {
-			fmt.Println("Error al descifrar:", err)
-			return
+			panic(err)
 		}
+	}() 
+	
+    log.Println("Servidor iniciado...")
+	
+	<-serverDoneChannel
 
-		fmt.Printf("Id: %s Nombre: %s CuentaNo. %s CreditCard Decrypted: %s ccv: %s Fecha: %s \n",
-			customer.ID,
-			customer.UserName,
-			customer.CuentaNumero,
-			decryptedData,
-			customer.CreditCardCcv,
-			customer.FecBirthday.Format(formatDate))
-	}
-
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+	srv.Shutdown(ctx)
+	log.Println("Servidor Detenido...")
 
 }

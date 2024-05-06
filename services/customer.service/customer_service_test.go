@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func GetInfoCustormer(t *testing.T) {
+func ObtenerTodosUsuarios(t *testing.T) {
 
-	customers, err := customer_service.GetInfoCustormer()
+	customers, err := customer_service.ObtenerColleccionUsuarios() //from customer_service.go
 
 	if err != nil {
 		t.Error("Se ha presentado un error en la consulta de clientes")

@@ -77,14 +77,19 @@ func SaveCollection() {
 		usuario.CreditCardNum, _ = crypto.EncryptData(usuario.CreditCardNum)
 		usuario.CreditCardCcv, _ = crypto.EncryptData(usuario.CreditCardCcv)
 		usuario.CuentaNumero, _ = crypto.EncryptData(usuario.CuentaNumero)
-		//...
+		//... Se pueden agregar los atributos del documento que se considere sensible.
 		//Fin
 		documentos = append(documentos, usuario)
 	}
 
 	// Insertar cada usuario en la colección de MongoDB
 	if _, err := collection.InsertMany(context.Background(), documentos); err != nil {
-		log.Fatal(err)
+		// Verificar si el error es debido a la violación de la restricción unique
+		if mongo.IsDuplicateKeyError(err) {
+			log.Println("Error: Documento duplicado encontrado")
+		} else {
+			log.Fatal(err)
+		}
 	}
 
 }

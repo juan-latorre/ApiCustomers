@@ -11,7 +11,7 @@ import (
 var collection = database.GetCollection("Usuarios")
 var ctx = context.Background()
 
-func GetBasicInfo() (m.ResponseList, error) {
+func ObtenerUsuariosLista() (m.ResponseList, error) {
 
 	var customersList m.ResponseList
 
@@ -38,6 +38,6 @@ func GetBasicInfo() (m.ResponseList, error) {
 	return customersList, nil
 }
 
-func SaveInfoIntoCollectionDB() {
+func GuardarUsuariosLista() {
 	database.SaveCollection()
 }

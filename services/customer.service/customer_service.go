@@ -5,9 +5,9 @@ import (
 	m "ApiCustomers/models"
 )
 
-func GetInfoCustormer() (m.ResponseList, error) {
+func ObtenerColleccionUsuarios() (m.ResponseList, error) {
 
-	customers, err := custormer_repositorio.GetBasicInfo()
+	customers, err := custormer_repositorio.ObtenerUsuariosLista()
 
 	if err != nil {
 		return nil, err
@@ -16,8 +16,8 @@ func GetInfoCustormer() (m.ResponseList, error) {
 	return customers, nil
 }
 
-func FullFillCollectionFromEndPoint() {
+func LlenarColeccionUsuarios() {
 
-	custormer_repositorio.SaveInfoIntoCollectionDB()
+	custormer_repositorio.GuardarUsuariosLista()
 
 }
