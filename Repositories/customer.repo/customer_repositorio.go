@@ -18,7 +18,7 @@ func ObtenerUsuariosLista() (m.ResponseList, error) {
 	filter := bson.D{}
 
 	cur, err := collection.Find(ctx, filter)
-
+    
 	if err != nil {
 		return nil, err
 	}
